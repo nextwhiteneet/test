@@ -2,22 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>
-    (function () {
-        // Auto-redirect: send phones to the mobile-optimized build.
-        // ?v=pc on the URL forces this desktop version to stay (used by the mobile file's own redirect guard, and available for manual override).
-        var params = new URLSearchParams(window.location.search);
-        if (params.get('v') === 'pc') return;
-
-        var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-        var isNarrow = Math.min(window.screen.width, window.screen.height) <= 820;
-        var isMobileUA = /Android|iPhone|iPad|iPod|Windows Phone|Mobile/i.test(navigator.userAgent);
-
-        if (isMobileUA || (isTouch && isNarrow)) {
-            window.location.replace('index-mobile.html' + window.location.search);
-        }
-    })();
-    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXT WHITE</title>
     <!-- KaTeX CSS & JS -->
