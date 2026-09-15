@@ -998,7 +998,7 @@
                         mask-image: radial-gradient(ellipse at 50% 30%, #000 30%, transparent 78%); }
 
         /* ---------- header ---------- */
-        header { backdrop-filter: blur(14px); }
+        header { backdrop-filter: blur(8px); }
         .logo-icon { transition: transform .35s var(--nw-ease), box-shadow .35s ease; }
         .logo:hover .logo-icon { transform: rotate(-8deg) scale(1.08); box-shadow: 0 0 22px rgba(0,243,255,0.55); }
         .hud-pill { transition: transform .2s var(--nw-ease), border-color .2s ease, box-shadow .25s ease; }
@@ -1202,9 +1202,9 @@
         .progress-bar-fill { position: relative; overflow: hidden; }
         .progress-bar-fill::after {
             content: ''; position: absolute; inset: 0;
-            background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,0.35) 50%, transparent 80%);
+            background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,0.3) 50%, transparent 80%);
             transform: translateX(-100%);
-            animation: nwBarShine 2.6s var(--nw-ease-soft) infinite;
+            animation: nwBarShine 3.4s var(--nw-ease-soft) infinite;
         }
         @keyframes nwBarShine { to { transform: translateX(100%); } }
 
@@ -1251,7 +1251,7 @@
             display: flex; align-items: center; gap: 10px; max-width: 330px;
             padding: 12px 16px; border-radius: 14px; font-size: .82rem; font-weight: 700; color: #fff;
             background: rgba(11, 15, 25, 0.95); border: 1px solid var(--glass-border);
-            box-shadow: 0 12px 34px rgba(0,0,0,0.55); backdrop-filter: blur(10px);
+            box-shadow: 0 12px 34px rgba(0,0,0,0.55);
             animation: nwToastIn .35s var(--nw-ease) both;
         }
         .nw-toast.nw-out { animation: nwToastOut .3s var(--nw-ease-soft) both; }
@@ -1279,7 +1279,7 @@
         .nw-modal {
             position: fixed; inset: 0; z-index: 150001; display: none;
             align-items: center; justify-content: center; padding: 20px;
-            background: rgba(3, 7, 18, 0.82); backdrop-filter: blur(7px);
+            background: rgba(3, 7, 18, 0.9);
         }
         .nw-modal.nw-open { display: flex; animation: nwViewIn .28s var(--nw-ease) both; }
         .nw-modal-card {
@@ -1305,7 +1305,7 @@
         /* ---------- misc polish ---------- */
         .social-card:hover .social-icon { transform: scale(1.12) rotate(-6deg); }
         .social-icon { transition: transform .3s var(--nw-ease); }
-        .ach-card.completed .ach-icon { animation: nwFloat 4.5s ease-in-out infinite; }
+        .ach-card.completed:hover .ach-icon { animation: nwFloat 2.4s ease-in-out infinite; }
         .goal-icon { transition: transform .3s var(--nw-ease); }
         .goal-card:hover .goal-icon { transform: scale(1.12) rotate(6deg); }
         .history-item:hover { transform: translateX(5px); }
@@ -1337,7 +1337,7 @@
         .nw-lite .progress-bar-fill::after,
         .nw-lite .p-btn.active,
         .nw-lite .subject-card.selected .subject-icon,
-        .nw-lite .ach-card.completed .ach-icon { animation: none !important; }
+        .nw-lite .ach-card.completed:hover .ach-icon { animation: none !important; }
         .nw-lite .option-card { animation: none !important; }
         .nw-lite * { backdrop-filter: none !important; }
 
@@ -1350,234 +1350,6 @@
             }
         }
     </style>
-
-    <!-- ============================================================
-         NEXT WHITE — REMASTER LAYER (v3)
-         Fluid motion pass: aurora depth, cursor spotlight, tilt,
-         spring transitions, animated borders. Everything below is
-         transform/opacity driven and auto-disabled on weak devices.
-         ============================================================ -->
-    <style id="nw-remaster-style">
-        :root {
-            --nw-spring: cubic-bezier(.34, 1.36, .48, 1);
-            --nw-glass: rgba(15, 23, 42, 0.62);
-            --nw-hair: rgba(255, 255, 255, 0.08);
-        }
-
-        /* ---------- 1. AURORA DEPTH (2 composited layers, no JS) ---------- */
-        .nw-aurora {
-            position: fixed; inset: -25%; z-index: 0; pointer-events: none;
-            opacity: .6; contain: strict;
-        }
-        .nw-aurora i {
-            position: absolute; display: block; border-radius: 50%; will-change: transform;
-        }
-        .nw-aurora i:nth-child(1) {
-            width: 46vw; height: 46vw; left: 6%; top: 8%;
-            background: radial-gradient(circle, rgba(0,243,255,.34), transparent 66%);
-            animation: nwDrift1 26s ease-in-out infinite alternate;
-        }
-        .nw-aurora i:nth-child(2) {
-            width: 42vw; height: 42vw; right: 4%; top: 22%;
-            background: radial-gradient(circle, rgba(176,38,255,.32), transparent 66%);
-            animation: nwDrift2 32s ease-in-out infinite alternate;
-        }
-        .nw-aurora i:nth-child(3) {
-            width: 38vw; height: 38vw; left: 34%; bottom: 4%;
-            background: radial-gradient(circle, rgba(255,42,133,.22), transparent 66%);
-            animation: nwDrift3 38s ease-in-out infinite alternate;
-        }
-        @keyframes nwDrift1 { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(9vw,7vh,0) scale(1.18); } }
-        @keyframes nwDrift2 { from { transform: translate3d(0,0,0) scale(1.1); } to { transform: translate3d(-8vw,10vh,0) scale(.95); } }
-        @keyframes nwDrift3 { from { transform: translate3d(0,0,0) scale(.95); } to { transform: translate3d(7vw,-8vh,0) scale(1.15); } }
-
-        /* cursor spotlight — one fixed layer moved by transform only */
-        #nw-spotlight {
-            position: fixed; top: 0; left: 0; width: 620px; height: 620px; margin: -310px 0 0 -310px;
-            border-radius: 50%; pointer-events: none; z-index: 0; opacity: 0;
-            background: radial-gradient(circle, rgba(0,243,255,.09), rgba(176,38,255,.05) 42%, transparent 68%);
-            transition: opacity .6s ease; will-change: transform;
-        }
-        #nw-spotlight.nw-on { opacity: 1; }
-
-        /* top scroll progress hairline */
-        #nw-scroll-line {
-            position: fixed; top: 0; left: 0; height: 2px; width: 100%; z-index: 99999;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
-            transform: scaleX(0); transform-origin: 0 50%; will-change: transform;
-            transition: transform .12s linear, opacity .3s ease; opacity: 0;
-        }
-        #nw-scroll-line.nw-on { opacity: 1; }
-
-        /* ---------- 2. SURFACES: deeper glass, softer light ---------- */
-        header {
-            background: rgba(6, 10, 20, 0.72) !important;
-            backdrop-filter: blur(18px) saturate(140%);
-            transition: padding .3s var(--nw-ease-soft), background .3s ease, box-shadow .3s ease, border-color .3s ease;
-        }
-        header.nw-scrolled {
-            background: rgba(4, 7, 15, 0.9) !important;
-            box-shadow: 0 10px 30px -18px rgba(0, 243, 255, 0.45);
-            border-bottom-color: rgba(0, 243, 255, 0.18) !important;
-        }
-
-        .setup-card, .dash-card, .goal-card, .ach-card, .social-card, .ach-portfolio-card, .history-item, .nw-test-hud {
-            background: var(--nw-glass) !important;
-            backdrop-filter: blur(12px);
-            border-color: var(--nw-hair) !important;
-        }
-
-        /* interactive light: a highlight that follows the pointer inside the card */
-        .nw-lit { position: relative; isolation: isolate; }
-        .nw-lit::before {
-            content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1;
-            background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(0,243,255,.10), transparent 60%);
-            opacity: 0; transition: opacity .35s ease;
-        }
-        .nw-lit:hover::before { opacity: 1; }
-
-        /* animated conic ring on the hero CTA + setup card */
-        .nw-ring { position: relative; }
-        .nw-ring::after {
-            content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
-            background: conic-gradient(from var(--nw-angle, 0deg), transparent 0%, rgba(0,243,255,.85) 18%, rgba(176,38,255,.85) 32%, transparent 52%, transparent 100%);
-            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-            -webkit-mask-composite: xor; mask-composite: exclude;
-            opacity: .55; animation: nwSpinRing 6s linear infinite;
-        }
-        @supports not (background: conic-gradient(from 0deg, red, blue)) { .nw-ring::after { display: none; } }
-        @keyframes nwSpinRing { to { --nw-angle: 360deg; } }
-        @property --nw-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
-
-        /* ---------- 3. HERO ---------- */
-        .hero-title .nw-ch {
-            display: inline-block; opacity: 0; transform: translateY(18px) rotateX(35deg);
-            animation: nwChIn .6s var(--nw-spring) forwards;
-        }
-        @keyframes nwChIn { to { opacity: 1; transform: none; } }
-
-        .preset-chip {
-            background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.015)) !important;
-            transition: transform .28s var(--nw-spring), box-shadow .28s ease, border-color .25s ease;
-        }
-        .preset-chip:hover { border-color: rgba(0,243,255,.45) !important; box-shadow: 0 10px 26px -10px rgba(0,243,255,.6); }
-
-        .subject-card { transition: transform .3s var(--nw-spring), border-color .25s ease, box-shadow .3s ease, background .25s ease; }
-        .subject-card.selected { box-shadow: 0 14px 34px -18px rgba(0,243,255,.8); }
-
-        .mode-btn, .tag-filter-btn, .q-count-btn, .chapter-tag-chip {
-            transition: transform .25s var(--nw-spring), background .22s ease, border-color .22s ease, color .22s ease, box-shadow .25s ease;
-        }
-        .mode-btn.active { box-shadow: 0 12px 30px -16px rgba(16,185,129,.9); }
-
-        /* ---------- 4. OPTIONS: sweep + tick ---------- */
-        .option-card {
-            transition: transform .26s var(--nw-spring), border-color .22s ease, background .22s ease, box-shadow .26s ease;
-        }
-        .option-card::after {
-            content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-            background: linear-gradient(100deg, transparent 35%, rgba(0,243,255,.16) 50%, transparent 65%);
-            transform: translateX(-100%); opacity: 0;
-        }
-        .option-card.selected::after { opacity: 1; animation: nwSweep .6s var(--nw-ease-soft) forwards; }
-        @keyframes nwSweep { to { transform: translateX(100%); } }
-        .option-card.selected .option-prefix::after,
-        .option-card.rev-correct .option-prefix::after {
-            content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-            background: inherit; border-radius: inherit; font-size: .85rem;
-            animation: nwTick .34s var(--nw-spring) both;
-        }
-        .option-card .option-prefix { position: relative; }
-        @keyframes nwTick { from { opacity: 0; transform: scale(.4) rotate(-25deg); } to { opacity: 1; transform: none; } }
-        .option-card:hover { box-shadow: 0 12px 30px -20px rgba(0,243,255,.9); }
-
-        /* ---------- 5. PALETTE + SIDEBAR ---------- */
-        .p-btn { transition: transform .22s var(--nw-spring), background .2s ease, border-color .2s ease, box-shadow .25s ease; }
-        .p-btn:hover { transform: translateY(-2px) scale(1.08); }
-        .p-btn.active { transform: scale(1.06); }
-        .sidebar { background: rgba(6, 10, 20, 0.55); backdrop-filter: blur(12px); }
-
-        /* ---------- 6. STAGGERED CONTENT ENTRANCE ---------- */
-        .nw-stagger > * { animation: nwUpIn .5s var(--nw-spring) both; }
-        .nw-stagger > *:nth-child(1) { animation-delay: .02s; }
-        .nw-stagger > *:nth-child(2) { animation-delay: .07s; }
-        .nw-stagger > *:nth-child(3) { animation-delay: .12s; }
-        .nw-stagger > *:nth-child(4) { animation-delay: .17s; }
-        .nw-stagger > *:nth-child(5) { animation-delay: .22s; }
-        .nw-stagger > *:nth-child(6) { animation-delay: .27s; }
-        .nw-stagger > *:nth-child(n+7) { animation-delay: .3s; }
-        @keyframes nwUpIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
-
-        .nw-view-in { animation: nwViewIn2 .45s var(--nw-spring) both; }
-        @keyframes nwViewIn2 { from { opacity: 0; transform: translateY(14px) scale(.994); } to { opacity: 1; transform: none; } }
-
-        /* ---------- 7. TEST BUILD OVERLAY ---------- */
-        #nw-build {
-            position: fixed; inset: 0; z-index: 160000; display: none;
-            align-items: center; justify-content: center; flex-direction: column; gap: 18px;
-            background: rgba(3, 7, 18, 0.86); backdrop-filter: blur(10px);
-        }
-        #nw-build.nw-open { display: flex; animation: nwFadeIn .2s ease both; }
-        #nw-build.nw-closing { animation: nwFadeOut .32s ease both; }
-        @keyframes nwFadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes nwFadeOut { to { opacity: 0; } }
-        .nw-orbit { position: relative; width: 84px; height: 84px; }
-        .nw-orbit i {
-            position: absolute; inset: 0; border-radius: 50%; border: 2px solid transparent;
-            border-top-color: var(--accent-cyan); animation: nwSpin 1s linear infinite;
-        }
-        .nw-orbit i:nth-child(2) { inset: 12px; border-top-color: var(--accent-purple); animation-duration: 1.5s; animation-direction: reverse; }
-        .nw-orbit i:nth-child(3) { inset: 24px; border-top-color: var(--accent-pink); animation-duration: 2s; }
-        .nw-orbit b {
-            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
-            animation: nwBreathe 1.8s var(--nw-ease) infinite;
-        }
-        @keyframes nwSpin { to { transform: rotate(360deg); } }
-        #nw-build-text { font-weight: 800; font-size: .92rem; color: #fff; letter-spacing: .3px; }
-        #nw-build-sub { font-size: .76rem; color: var(--text-muted); font-weight: 600; }
-
-        /* ---------- 8. DASHBOARD / MISC ---------- */
-        .dash-stat-box { transition: transform .3s var(--nw-spring), border-color .25s ease, background .25s ease, box-shadow .3s ease; }
-        .dash-stat-box:hover { box-shadow: 0 16px 34px -22px rgba(0,243,255,.9); }
-        .nw-grade { animation: nwGradeSpring .7s var(--nw-spring) both; }
-        @keyframes nwGradeSpring { from { opacity: 0; transform: scale(.3) rotate(-18deg); } to { opacity: 1; transform: none; } }
-
-        .drawer-btn { border-radius: 14px; }
-        .left-drawer { background: rgba(6, 10, 20, 0.6); backdrop-filter: blur(14px); }
-
-        .nw-toast { animation: nwToastSpring .45s var(--nw-spring) both; }
-        @keyframes nwToastSpring { from { opacity: 0; transform: translateY(24px) scale(.92); } to { opacity: 1; transform: none; } }
-
-        .nw-modal-card { animation: nwCardSpring .5s var(--nw-spring) both; }
-        @keyframes nwCardSpring { from { opacity: 0; transform: translateY(26px) scale(.94); } to { opacity: 1; transform: none; } }
-
-        .btn-next, .btn-submit { transition: transform .25s var(--nw-spring), box-shadow .25s ease, filter .25s ease; }
-        .btn-next:hover, .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 16px 34px -16px rgba(0,243,255,.85); filter: saturate(115%); }
-
-        .bm-tab-btn, .filter-btn, .subject-switch-btn { transition: transform .22s var(--nw-spring), background .2s ease, color .2s ease, border-color .2s ease; }
-        .bm-tab-btn:hover, .subject-switch-btn:hover { transform: translateY(-2px); }
-
-        /* ---------- 9. GUARDS ---------- */
-        @media (hover: none), (max-width: 900px) {
-            #nw-spotlight { display: none; }
-            .nw-aurora { opacity: .4; }
-            .nw-lit::before { display: none; }
-        }
-        .nw-lite .nw-aurora i,
-        .nw-lite .nw-ring::after,
-        .nw-lite .hero-title .nw-ch { animation: none !important; }
-        .nw-lite .nw-aurora { opacity: .3; }
-        .nw-lite .hero-title .nw-ch { opacity: 1; transform: none; }
-        .nw-lite #nw-spotlight,
-        .nw-lite .nw-stagger > * { animation: none !important; }
-        .nw-lite .nw-lit::before { display: none; }
-
-        @media (prefers-reduced-motion: reduce) {
-            .nw-aurora i, .nw-ring::after, #nw-spotlight { animation: none !important; }
-            .hero-title .nw-ch { opacity: 1 !important; transform: none !important; animation: none !important; }
-        }
-    </style>
-
 
 </head>
 <body onload="init()">
@@ -87303,257 +87075,6 @@ function startTestUI() {
     if (document.readyState === 'complete') setTimeout(boot, 250);
     else window.addEventListener('load', function () { setTimeout(boot, 350); });
     setTimeout(function () { var s = $('nw-splash'); if (s) boot(); }, 4000); // hard failsafe
-})();
-</script>
-
-<!-- ============================================================
-     NEXT WHITE — REMASTER LAYER (v3)
-     Motion engine: one shared rAF loop, passive listeners, zero libs.
-     Additive only; every earlier function stays intact.
-     ============================================================ -->
-<script>
-(function () {
-    "use strict";
-
-    var LITE = document.body.classList.contains('nw-lite');
-    var FINE = window.matchMedia('(hover: hover) and (pointer: fine)').matches && window.innerWidth > 900;
-    var MOTION = !LITE && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    function $(id) { return document.getElementById(id); }
-    function mk(tag, cls, html) {
-        var n = document.createElement(tag);
-        if (cls) n.className = cls;
-        if (html !== undefined) n.innerHTML = html;
-        return n;
-    }
-
-    /* ============================================================
-       1. AMBIENT LAYERS — aurora, spotlight, scroll hairline
-       ============================================================ */
-    var aurora = mk('div', 'nw-aurora', '<i></i><i></i><i></i>');
-    document.body.insertBefore(aurora, document.body.firstChild);
-
-    var line = mk('div');
-    line.id = 'nw-scroll-line';
-    document.body.appendChild(line);
-
-    var spot = null;
-    if (FINE && MOTION) {
-        spot = mk('div');
-        spot.id = 'nw-spotlight';
-        document.body.appendChild(spot);
-    }
-
-    /* one shared pointer loop: spotlight + card light + tilt */
-    var px = 0, py = 0, queued = false, litCard = null, tiltCard = null;
-    var LIT_SEL = '.setup-card, .dash-card, .goal-card, .ach-card, .social-card, .ach-portfolio-card, .nw-test-hud';
-    var TILT_SEL = '.subject-card, .preset-chip, .goal-icon';
-
-    function frame() {
-        queued = false;
-        if (spot) spot.style.transform = 'translate3d(' + px + 'px,' + py + 'px,0)';
-        if (litCard) {
-            var r = litCard.getBoundingClientRect();
-            litCard.style.setProperty('--mx', ((px - r.left) / r.width * 100).toFixed(1) + '%');
-            litCard.style.setProperty('--my', ((py - r.top) / r.height * 100).toFixed(1) + '%');
-        }
-        if (tiltCard) {
-            var t = tiltCard.getBoundingClientRect();
-            var rx = (((py - t.top) / t.height) - .5) * -7;
-            var ry = (((px - t.left) / t.width) - .5) * 7;
-            tiltCard.style.transform = 'perspective(800px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) translateY(-3px)';
-        }
-    }
-
-    if (FINE && MOTION) {
-        if (spot) setTimeout(function () { spot.classList.add('nw-on'); }, 600);
-        document.addEventListener('pointermove', function (e) {
-            px = e.clientX; py = e.clientY;
-            var lit = e.target.closest ? e.target.closest(LIT_SEL) : null;
-            if (lit !== litCard) {
-                if (litCard) { litCard.style.removeProperty('--mx'); litCard.style.removeProperty('--my'); }
-                litCard = lit;
-            }
-            var tl = e.target.closest ? e.target.closest(TILT_SEL) : null;
-            if (tl !== tiltCard) {
-                if (tiltCard) tiltCard.style.transform = '';
-                tiltCard = tl;
-            }
-            if (!queued) { queued = true; requestAnimationFrame(frame); }
-        }, { passive: true });
-
-        document.addEventListener('pointerleave', function () {
-            if (tiltCard) { tiltCard.style.transform = ''; tiltCard = null; }
-        }, { passive: true });
-    }
-
-    function markLit(scope) {
-        (scope || document).querySelectorAll(LIT_SEL).forEach(function (n) { n.classList.add('nw-lit'); });
-    }
-    markLit(document);
-
-    /* ============================================================
-       2. SCROLL: header state + progress hairline (rAF throttled)
-       ============================================================ */
-    var head = $('app-header');
-    var sTick = false;
-    function onScroll(e) {
-        if (sTick) return;
-        sTick = true;
-        var node = e.target;
-        requestAnimationFrame(function () {
-            sTick = false;
-            var top = node.scrollTop || 0;
-            if (head) head.classList.toggle('nw-scrolled', top > 12);
-            var max = node.scrollHeight - node.clientHeight;
-            var p = max > 40 ? Math.min(1, top / max) : 0;
-            line.style.transform = 'scaleX(' + p.toFixed(3) + ')';
-            line.classList.toggle('nw-on', max > 40 && top > 8);
-        });
-    }
-    function bindScroll() {
-        ['.main-content-area', '.dashboard-container', '.workspace'].forEach(function (sel) {
-            var n = document.querySelector(sel);
-            if (n && !n.dataset.nwBound) { n.dataset.nwBound = '1'; n.addEventListener('scroll', onScroll, { passive: true }); }
-        });
-    }
-    bindScroll();
-
-    /* ============================================================
-       3. HERO TITLE — per-letter reveal (once, CSS driven)
-       ============================================================ */
-    (function splitTitle() {
-        var t = document.querySelector('.hero-title');
-        if (!t || !MOTION) return;
-        var txt = t.textContent.trim();
-        if (txt.length > 60) return;
-        t.innerHTML = txt.split('').map(function (c, i) {
-            return '<span class="nw-ch" style="animation-delay:' + (0.25 + i * 0.028).toFixed(3) + 's">' + (c === ' ' ? '&nbsp;' : c) + '</span>';
-        }).join('');
-    })();
-
-    /* ============================================================
-       4. STAGGERED VIEW ENTRANCE
-       ============================================================ */
-    var STAGGER_HOSTS = ['.setup-card', '.history-container', '.dashboard-container'];
-    function stagger(scope) {
-        if (!MOTION || !scope) return;
-        STAGGER_HOSTS.forEach(function (sel) {
-            var host = scope.matches && scope.matches(sel) ? scope : scope.querySelector(sel);
-            if (!host) return;
-            for (var i = 0; i < host.children.length; i++) host.children[i].classList.remove('nw-reveal');
-            host.classList.remove('nw-stagger');
-            void host.offsetWidth;
-            host.classList.add('nw-stagger');
-        });
-    }
-
-    var _switchDrawerTab = window.switchDrawerTab;
-    window.switchDrawerTab = function (tab) {
-        _switchDrawerTab.apply(this, arguments);
-        var ids = { hero: 'hero-view', bookmarks: 'bookmarks-view', goals: 'goals-view', history: 'history-view',
-                    community: 'community-view', feedback: 'feedback-view', achievements: 'achievements-view',
-                    share: 'share-view', account: 'account-view' };
-        var node = $(ids[tab]);
-        stagger(node);
-        markLit(node || document);
-    };
-
-    var _switchView = window.switchView;
-    window.switchView = function (viewName) {
-        _switchView.apply(this, arguments);
-        var map = { hero: 'hero-view', test: 'test-view', dashboard: 'dashboard-view' };
-        var node = $(map[viewName]);
-        stagger(node);
-        markLit(node || document);
-        bindScroll();
-        line.style.transform = 'scaleX(0)';
-        if (head) head.classList.remove('nw-scrolled');
-    };
-
-    /* animated ring accents on the two hero focal points */
-    (function accents() {
-        var cta = document.querySelector('.setup-card .btn-next');
-        if (cta) cta.classList.add('nw-ring');
-        var card = document.querySelector('.setup-card');
-        if (card) card.classList.add('nw-ring');
-    })();
-
-    /* ============================================================
-       5. PAPER-BUILD OVERLAY on test generation
-       ============================================================ */
-    var build = mk('div');
-    build.id = 'nw-build';
-    build.innerHTML =
-        '<div class="nw-orbit"><i></i><i></i><i></i><b>🧠</b></div>' +
-        '<div id="nw-build-text">Assembling your paper…</div>' +
-        '<div id="nw-build-sub">Balancing subjects, chapters and difficulty</div>';
-    document.body.appendChild(build);
-
-    function openBuild(title, sub) {
-        $('nw-build-text').innerText = title;
-        $('nw-build-sub').innerText = sub;
-        build.classList.remove('nw-closing');
-        build.classList.add('nw-open');
-    }
-    function closeBuild() {
-        build.classList.add('nw-closing');
-        setTimeout(function () { build.classList.remove('nw-open', 'nw-closing'); }, 320);
-    }
-
-    function withBuild(fn, title, sub) {
-        return function () {
-            var self = this, args = arguments;
-            if (!MOTION) return fn.apply(self, args);
-            var count = '';
-            try { count = (typeof selectedQCount !== 'undefined') ? selectedQCount + ' questions' : ''; } catch (e) {}
-            openBuild(title, sub + (count ? ' · ' + count : ''));
-            setTimeout(function () {
-                try { fn.apply(self, args); } finally { closeBuild(); }
-            }, 430);
-        };
-    }
-
-    if (window.startCustomTest) window.startCustomTest = withBuild(window.startCustomTest, 'Assembling your paper…', 'Balancing subjects, chapters and difficulty');
-    if (window.startFilteredSourceTest) window.startFilteredSourceTest = withBuild(window.startFilteredSourceTest, 'Pulling your revision set…', 'Filtering your saved questions');
-    if (window.startRevisionTest) window.startRevisionTest = withBuild(window.startRevisionTest, 'Building revision round…', 'Queueing the questions worth redoing');
-
-    /* ============================================================
-       6. KEEP NEW NODES LIT / BOUND AFTER RE-RENDERS
-       ============================================================ */
-    var _renderQuestion = window.renderQuestion;
-    window.renderQuestion = function () {
-        _renderQuestion.apply(this, arguments);
-    };
-
-    var _renderAchievementsGrid = window.renderAchievementsGrid;
-    if (_renderAchievementsGrid) {
-        window.renderAchievementsGrid = function () {
-            _renderAchievementsGrid.apply(this, arguments);
-            markLit($('achievements-grid'));
-        };
-    }
-
-    var _renderHistoryUI = window.renderHistoryUI;
-    if (_renderHistoryUI) {
-        window.renderHistoryUI = function () {
-            _renderHistoryUI.apply(this, arguments);
-            markLit($('history-view'));
-        };
-    }
-
-    var _renderBookmarksUI = window.renderBookmarksUI;
-    if (_renderBookmarksUI) {
-        window.renderBookmarksUI = function () {
-            _renderBookmarksUI.apply(this, arguments);
-            markLit($('bookmarks-view'));
-        };
-    }
-
-    /* first paint polish */
-    window.addEventListener('load', function () {
-        setTimeout(function () { stagger($('hero-view')); markLit(document); bindScroll(); }, 420);
-    });
 })();
 </script>
 
