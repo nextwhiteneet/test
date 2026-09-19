@@ -535,6 +535,20 @@
             padding-left: 8px;
         }
 
+        .drawer-section-title {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 20px 0 8px;
+            padding-left: 8px;
+            opacity: 0.8;
+        }
+        .drawer-section-title.drawer-section-title-first {
+            margin-top: 0;
+        }
+
         .drawer-btn {
             display: flex;
             align-items: center;
@@ -2454,22 +2468,26 @@
 
     <!-- Left Navigation Drawer -->
     <div class="left-drawer" id="main-left-drawer">
-        <div class="drawer-title">ACCESS:</div>
+        <div class="drawer-section-title drawer-section-title-first">Learning</div>
         <button class="drawer-btn active" id="drawer-practice-btn" onclick="switchDrawerTab('hero')">
             <span>🔥</span> Grind
         </button>
         <button class="drawer-btn" id="drawer-bookmarks-btn" onclick="switchDrawerTab('bookmarks')">
             <span>🔖</span> Bookmarked Qs
         </button>
+        <button class="drawer-btn" id="drawer-history-btn" onclick="switchDrawerTab('history')">
+            <span>📜</span> Test History
+        </button>
+
+        <div class="drawer-section-title">Boost</div>
         <button class="drawer-btn" id="drawer-goals-btn" onclick="switchDrawerTab('goals')">
             <span>🎯</span> Goals
         </button>
         <button class="drawer-btn" id="drawer-achievements-btn" onclick="switchDrawerTab('achievements')">
             <span>🏆</span> Achievements
         </button>
-        <button class="drawer-btn" id="drawer-history-btn" onclick="switchDrawerTab('history')">
-            <span>📜</span> Test History
-        </button>
+
+        <div class="drawer-section-title">Connect</div>
         <button class="drawer-btn" id="drawer-community-btn" onclick="switchDrawerTab('community')">
             <span>💬</span> Community
         </button>
@@ -2479,6 +2497,8 @@
         <button class="drawer-btn" id="drawer-share-btn" onclick="switchDrawerTab('share')">
             <span>📤</span> Share with Batchmates
         </button>
+
+        <div class="drawer-section-title">Account</div>
         <button class="drawer-btn" id="drawer-account-btn" onclick="switchDrawerTab('account')">
             <span>👤</span> My Account
         </button>
@@ -146315,6 +146335,188 @@ html[data-theme="light"] .nw-pretest-start {
 }
 
 </style>
+
+
+<style id="nw-theme-ball-float">
+/* Floating / draggable theme toggle (assistive-ball style) */
+#theme-toggle-btn {
+  position: fixed !important;
+  z-index: 99999 !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 50% !important;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+  transition: box-shadow .2s ease, transform .15s ease;
+}
+#theme-toggle-btn.nw-dragging {
+  cursor: grabbing !important;
+  transform: scale(1.08);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.35) !important;
+  transition: none !important;
+}
+#theme-toggle-btn.nw-dragging:active {
+  transform: scale(1.08);
+}
+</style>
+<script id="nw-theme-ball-drag">
+(function () {
+  'use strict';
+  var BTN_ID = 'theme-toggle-btn';
+  var POS_KEY = 'nw-theme-btn-pos';
+  var DRAG_THRESHOLD = 8; // px before we treat as drag (not click)
+
+  function clamp(v, min, max) {
+    return Math.max(min, Math.min(max, v));
+  }
+
+  function loadPos() {
+    try {
+      var raw = localStorage.getItem(POS_KEY);
+      if (!raw) return null;
+      var p = JSON.parse(raw);
+      if (typeof p.left === 'number' && typeof p.top === 'number') return p;
+    } catch (e) {}
+    return null;
+  }
+
+  function savePos(left, top) {
+    try {
+      localStorage.setItem(POS_KEY, JSON.stringify({ left: left, top: top }));
+    } catch (e) {}
+  }
+
+  function applyPos(btn, left, top) {
+    var maxL = Math.max(0, window.innerWidth - btn.offsetWidth);
+    var maxT = Math.max(0, window.innerHeight - btn.offsetHeight);
+    left = clamp(left, 0, maxL);
+    top = clamp(top, 0, maxT);
+    btn.style.left = left + 'px';
+    btn.style.top = top + 'px';
+    btn.style.right = 'auto';
+    btn.style.bottom = 'auto';
+    return { left: left, top: top };
+  }
+
+  function defaultPos(btn) {
+    // Match original bottom-right placement
+    var left = window.innerWidth - btn.offsetWidth - 22;
+    var top = window.innerHeight - btn.offsetHeight - 22;
+    return applyPos(btn, left, top);
+  }
+
+  function init() {
+    var btn = document.getElementById(BTN_ID);
+    if (!btn || btn.__nwDragReady) return;
+    btn.__nwDragReady = true;
+
+    var saved = loadPos();
+    if (saved) applyPos(btn, saved.left, saved.top);
+    else defaultPos(btn);
+
+    var dragging = false;
+    var moved = false;
+    var startX = 0, startY = 0, origL = 0, origT = 0;
+    var pointerId = null;
+
+    function onDown(e) {
+      // Only primary button / single touch
+      if (e.type === 'mousedown' && e.button !== 0) return;
+      var pt = e.touches ? e.touches[0] : e;
+      dragging = true;
+      moved = false;
+      startX = pt.clientX;
+      startY = pt.clientY;
+      var rect = btn.getBoundingClientRect();
+      origL = rect.left;
+      origT = rect.top;
+      if (e.pointerId != null) {
+        pointerId = e.pointerId;
+        try { btn.setPointerCapture(e.pointerId); } catch (err) {}
+      }
+      btn.classList.add('nw-dragging');
+      // Prevent text selection / scroll while considering drag
+      if (e.cancelable) e.preventDefault();
+    }
+
+    function onMove(e) {
+      if (!dragging) return;
+      var pt = e.touches ? e.touches[0] : e;
+      var dx = pt.clientX - startX;
+      var dy = pt.clientY - startY;
+      if (!moved && (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD)) {
+        moved = true;
+      }
+      if (moved) {
+        applyPos(btn, origL + dx, origT + dy);
+        if (e.cancelable) e.preventDefault();
+      }
+    }
+
+    function onUp(e) {
+      if (!dragging) return;
+      dragging = false;
+      btn.classList.remove('nw-dragging');
+      if (pointerId != null) {
+        try { btn.releasePointerCapture(pointerId); } catch (err) {}
+        pointerId = null;
+      }
+      if (moved) {
+        var rect = btn.getBoundingClientRect();
+        var pos = applyPos(btn, rect.left, rect.top);
+        savePos(pos.left, pos.top);
+        // Suppress the click that follows a drag
+        btn.__nwSuppressClick = true;
+        setTimeout(function () { btn.__nwSuppressClick = false; }, 40);
+      }
+      // If not moved, native onclick / our click handler will toggle theme
+    }
+
+    // Prefer Pointer Events; fall back to mouse + touch
+    if (window.PointerEvent) {
+      btn.addEventListener('pointerdown', onDown);
+      window.addEventListener('pointermove', onMove, { passive: false });
+      window.addEventListener('pointerup', onUp);
+      window.addEventListener('pointercancel', onUp);
+    } else {
+      btn.addEventListener('mousedown', onDown);
+      window.addEventListener('mousemove', onMove, { passive: false });
+      window.addEventListener('mouseup', onUp);
+      btn.addEventListener('touchstart', onDown, { passive: false });
+      window.addEventListener('touchmove', onMove, { passive: false });
+      window.addEventListener('touchend', onUp);
+      window.addEventListener('touchcancel', onUp);
+    }
+
+    // Intercept click after drag so theme does not flip accidentally
+    btn.addEventListener('click', function (e) {
+      if (btn.__nwSuppressClick) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return false;
+      }
+    }, true);
+
+    // Keep on-screen after rotate / resize
+    window.addEventListener('resize', function () {
+      var rect = btn.getBoundingClientRect();
+      var pos = applyPos(btn, rect.left, rect.top);
+      savePos(pos.left, pos.top);
+    }, { passive: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  // Safety: button may be injected late
+  setTimeout(init, 200);
+  setTimeout(init, 1000);
+})();
+</script>
 
 </body>
 </html>
